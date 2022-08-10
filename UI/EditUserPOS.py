@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'AddUserInPOS.ui'
+# Form implementation generated from reading ui file 'EditUserPOS.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(415, 384)
+        MainWindow.resize(320, 359)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.centralwidget)
@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.barcodeUser.setFont(font)
-        self.barcodeUser.setReadOnly(False)
+        self.barcodeUser.setReadOnly(True)
         self.barcodeUser.setObjectName("barcodeUser")
         self.horizontalLayout.addWidget(self.barcodeUser)
         self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
@@ -174,16 +174,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.fullname)
         self.gridLayout.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
         self.gridLayout_2.addWidget(self.gridFrame, 3, 1, 1, 2)
-        self.addUser = QtWidgets.QPushButton(self.centralwidget)
+        self.editconfirm = QtWidgets.QPushButton(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.addUser.setFont(font)
-        self.addUser.setObjectName("addUser")
-        self.gridLayout_2.addWidget(self.addUser, 4, 1, 1, 2)
+        self.editconfirm.setFont(font)
+        self.editconfirm.setObjectName("editconfirm")
+        self.gridLayout_2.addWidget(self.editconfirm, 4, 1, 1, 2)
         self.gridLayout_3.addLayout(self.gridLayout_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 415, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 320, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -196,12 +196,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_5.setText(_translate("MainWindow", "เพิ่มผู้ใช้งานในระบบ"))
+        self.label_5.setText(_translate("MainWindow", "แก้ไขผู้ใช้งาน"))
         self.label_3.setText(_translate("MainWindow", "หมายเหตุ      "))
         self.label_4.setText(_translate("MainWindow", "เบอร์มือถือ    "))
         self.label.setText(_translate("MainWindow", "รหัสนักศึกษา  "))
         self.label_2.setText(_translate("MainWindow", "ชื่อ - นามสกุล"))
-        self.addUser.setText(_translate("MainWindow", "เพิ่มผู้ใช้งาน"))
+        self.editconfirm.setText(_translate("MainWindow", "แก้ไข"))
 
 
 if __name__ == "__main__":

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>384</height>
+    <width>320</width>
+    <height>359</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,7 +49,7 @@
          </font>
         </property>
         <property name="text">
-         <string>เพิ่มผู้ใช้งานในระบบ</string>
+         <string>แก้ไขผู้ใช้งาน</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -218,7 +218,7 @@
               </font>
              </property>
              <property name="readOnly">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -283,14 +283,14 @@
        </widget>
       </item>
       <item row="4" column="1" colspan="2">
-       <widget class="QPushButton" name="addUser">
+       <widget class="QPushButton" name="editconfirm">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>เพิ่มผู้ใช้งาน</string>
+         <string>แก้ไข</string>
         </property>
        </widget>
       </item>
@@ -303,7 +303,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>415</width>
+     <width>320</width>
      <height>26</height>
     </rect>
    </property>

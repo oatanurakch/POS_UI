@@ -6,54 +6,141 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>845</width>
-    <height>568</height>
+    <width>1188</width>
+    <height>713</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>801</width>
-      <height>471</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="AllObj">
-     <attribute name="title">
-      <string>รายการวัสดุทั้งหมด</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="Obj_br">
-     <attribute name="title">
-      <string>รายการวัสดุที่ถูกยืม</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>รายชื่อผู้ใช้งานในระบบ</string>
-     </attribute>
-    </widget>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="AllObj">
+       <attribute name="title">
+        <string>รายการวัสดุทั้งหมด</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="Obj_br">
+       <attribute name="title">
+        <string>รายการวัสดุที่ถูกยืม</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="UserTab">
+       <attribute name="title">
+        <string>รายชื่อผู้ใช้งานในระบบ</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="addUser">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>เพิ่มผู้ใช้งาน</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="editUser">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>แก้ไขผู้ใช้งาน</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLineEdit" name="lineEdit"/>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="pushButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Search</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="4">
+         <widget class="QTableWidget" name="tableListuser">
+          <property name="autoScroll">
+           <bool>true</bool>
+          </property>
+          <property name="autoScrollMargin">
+           <number>16</number>
+          </property>
+          <property name="sortingEnabled">
+           <bool>false</bool>
+          </property>
+          <attribute name="horizontalHeaderCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>36</number>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>No.</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Student ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Full name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Mobile</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>หมายเหตุ</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>845</width>
+     <width>1188</width>
      <height>26</height>
     </rect>
    </property>
@@ -61,19 +148,20 @@
     <property name="title">
      <string>Menu</string>
     </property>
-    <addaction name="actionRegister_User"/>
+    <widget class="QMenu" name="menuStore_manage_User">
+     <property name="title">
+      <string>Store manage User</string>
+     </property>
+     <addaction name="actionCreate_User"/>
+     <addaction name="actionEdit_User_2"/>
+    </widget>
     <addaction name="actionRegister_Object"/>
-    <addaction name="actionCreate_User_in_store"/>
+    <addaction name="menuStore_manage_User"/>
     <addaction name="actionClose_Program"/>
    </widget>
    <addaction name="menuMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionRegister_User">
-   <property name="text">
-    <string>Register User</string>
-   </property>
-  </action>
   <action name="actionRegister_Object">
    <property name="text">
     <string>Register Object</string>
@@ -84,9 +172,29 @@
     <string>Close Program</string>
    </property>
   </action>
-  <action name="actionCreate_User_in_store">
+  <action name="actionRegister_User_2">
    <property name="text">
-    <string>Create User in store</string>
+    <string>Register User</string>
+   </property>
+  </action>
+  <action name="actionEdit_User">
+   <property name="text">
+    <string>Edit User</string>
+   </property>
+  </action>
+  <action name="actionRemove_User">
+   <property name="text">
+    <string>Remove User</string>
+   </property>
+  </action>
+  <action name="actionCreate_User">
+   <property name="text">
+    <string>Create User </string>
+   </property>
+  </action>
+  <action name="actionEdit_User_2">
+   <property name="text">
+    <string>Edit User</string>
    </property>
   </action>
  </widget>
