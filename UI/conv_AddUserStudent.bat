@@ -1,0 +1,1 @@
+pyuic5 -x AddUserInPOS.ui -o AddUserInPOS.py
