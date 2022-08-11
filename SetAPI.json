@@ -1,0 +1,9 @@
+{
+    "login": "http://localhost:8000/api-user-lab/login",
+    "userList": "http://localhost:8000/api-user/UserList",
+    "addUserPOS": "http://localhost:8000/api-user/CreateUpdate_user",
+    "LoadOldData": "http://localhost:8000/api-user/CreateUpdate_user/",
+    "UpdataData": "http://localhost:8000/api-user/CreateUpdate_user/",
+    "deleteUserPOS": "http://localhost:8000/api-user/deleteUser/",
+    "filterUser" : "http://localhost:8000/api-user/filterUser/"
+}

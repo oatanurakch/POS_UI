@@ -40,17 +40,20 @@
         <string>รายชื่อผู้ใช้งานในระบบ</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="addUser">
+        <item row="0" column="2">
+         <widget class="QPushButton" name="deleteUser">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>เพิ่มผู้ใช้งาน</string>
+           <string>ลบผู้ใช้งาน</string>
           </property>
          </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="StudentIDSearch"/>
         </item>
         <item row="0" column="1">
          <widget class="QPushButton" name="editUser">
@@ -64,11 +67,8 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QLineEdit" name="lineEdit"/>
-        </item>
-        <item row="0" column="3">
-         <widget class="QPushButton" name="pushButton">
+        <item row="0" column="4">
+         <widget class="QPushButton" name="SearchUserList">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -85,7 +85,37 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="4">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="addUser">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>เพิ่มผู้ใช้งาน</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QPushButton" name="refresh">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Refresh</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="6">
          <widget class="QTableWidget" name="tableListuser">
           <property name="autoScroll">
            <bool>true</bool>
@@ -141,7 +171,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMenu">

@@ -4,6 +4,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import sys
 import requests
+import json
+import os
+from pathlib import Path
 
 # Login UI
 from UI.Login import *
@@ -16,6 +19,9 @@ import UI.EditUserPOS
 
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
+
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]
 
 class myUI(Ui_MainWindow):
     def __init__(self):
@@ -42,7 +48,10 @@ class myUI(Ui_MainWindow):
         if username == '' or password == '':
             self.AleartBoxError(description = 'Please fill in all fields !') 
         else:
-            st = requests.post('http://localhost:9999/api-user-lab/login', data = {'username': username, 'password': password}, timeout = 1)    
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['login'])
+            st = requests.post(f'{url}', data = {'username': username, 'password': password}, timeout = 1)    
             # Token
             self.Token = st.text
             if st.status_code == 200:
@@ -60,7 +69,8 @@ class myUI(Ui_MainWindow):
     # Aleartbox error
     def AleartBoxError(self, description):
         msg = QMessageBox()
-        msg.setWindowTitle('Error')
+        msg.setWindowTitle('Error !')
+        msg.setWindowIcon(QtGui.QIcon(os.path.join(ROOT, r'imageIcon\error.png')))
         msg.setText(description)
         msg.setIcon(QMessageBox.Warning)
         msg.setStandardButtons(QMessageBox.Ok)
@@ -69,11 +79,26 @@ class myUI(Ui_MainWindow):
     # Aleartbox Success 
     def AleartBoxSuccess(self, description):
         msg = QMessageBox()
-        msg.setWindowTitle('Success')
+        msg.setWindowTitle('Success !')
+        msg.setWindowIcon(QtGui.QIcon(os.path.join(ROOT, r'imageIcon\success.png')))
         msg.setText(description)
         msg.setIcon(QMessageBox.Information)
         msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
+
+    def AleartBoxConfirm(self, description):
+        msg = QMessageBox()
+        msg.setWindowTitle('Confirm ? ')
+        msg.setWindowIcon(QtGui.QIcon(os.path.join(ROOT, r'imageIcon\question.png')))
+        msg.setText(description)
+        msg.setIcon(QMessageBox.Question)
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        # ret is signal from clicked button
+        ret = msg.exec_()
+        if ret == QMessageBox.Yes:
+            return True
+        elif ret == QMessageBox.No:
+            return False
         
     def show(self):
         MainWindow.show()
@@ -95,6 +120,9 @@ class myUI(Ui_MainWindow):
         # Set up button signal
         self.SetUpButtonMain()
         # set up table
+        self.SetTableWidth()
+
+    def SetTableWidth(self):
         self.ui_mainUI.tableListuser.setColumnWidth(0, 50)
         self.ui_mainUI.tableListuser.setColumnWidth(1, 200)
         self.ui_mainUI.tableListuser.setColumnWidth(2, 408)
@@ -113,19 +141,31 @@ class myUI(Ui_MainWindow):
         self.ui_mainUI.tabWidget.currentChanged.connect(self.LoadTabIndex)
         # signal in table widget
         self.ui_mainUI.tableListuser.clicked.connect(self.LoadTextInSelected)
+        # Delete user in POS System
+        self.ui_mainUI.deleteUser.clicked.connect(self.DeleteUserInPOSSystem)
+        # Search user in POS Syetem
+        self.ui_mainUI.SearchUserList.clicked.connect(self.SearchUserInPOSSystem)
+        # Refresh button for load table
+        self.ui_mainUI.refresh.clicked.connect(self.ClearTable)
         
     def LoadTabIndex(self):
         self.TabIndex = self.ui_mainUI.tabWidget.currentIndex()
         if self.TabIndex == 2:
             # disable edit user
             self.ui_mainUI.editUser.setEnabled(False)
+            self.ui_mainUI.deleteUser.setEnabled(False)
             # GET User list in database
             # Load data to table
             self.LoadDataToTable()
             
     def LoadDataToTable(self):
+        # set table width
+        self.SetTableWidth()
         try:
-            rt = requests.get('http://localhost:9999/api-user/UserList', timeout = 1)
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['userList'])
+            rt = requests.get(f'{url}', timeout = 1)
             data = rt.json()
             self.ui_mainUI.tableListuser.setRowCount(len(data))
             row = 0
@@ -146,8 +186,10 @@ class myUI(Ui_MainWindow):
             self.item = self.ui_mainUI.tableListuser.item(row, column)
             # if column == 1 it's mean that user click on student ID
             self.ui_mainUI.editUser.setEnabled(True)
+            self.ui_mainUI.deleteUser.setEnabled(True)
         else:
             self.ui_mainUI.editUser.setEnabled(False)
+            self.ui_mainUI.deleteUser.setEnabled(False)
         
 # ----------> Register User in POS <----------  
     def StartRegisterUser(self):
@@ -176,7 +218,10 @@ class myUI(Ui_MainWindow):
         des = str(self.ui_register_user.description.text())
         # check student id is empty or not
         if student_id != '' and student_name != '' and mobile != '':
-            st = requests.post('http://localhost:9999/api-user/CreateUpdate_user', data = {'barcode_user': student_id, 'name_user': student_name, 'mobile': mobile, 'description': des}, timeout = 1)
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['addUserPOS'])
+            st = requests.post(f'{url}', data = {'barcode_user': student_id, 'name_user': student_name, 'mobile': mobile, 'description': des}, timeout = 1)
             if st.status_code == 201:
                 self.AleartBoxSuccess(description = 'Register user success !')
                 # Clear data in form
@@ -208,7 +253,10 @@ class myUI(Ui_MainWindow):
 
     def LoadOldDataFromDatabase(self):
         try:
-            rt = requests.get('http://localhost:9999/api-user/CreateUpdate_user/{}' .format(str(self.item.text())), timeout = 1)
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['LoadOldData'])
+            rt = requests.get('{}{}' .format(str(url), str(self.item.text())), timeout = 1)
             if rt.status_code == 200:
                 data = rt.json()
                 # Student ID
@@ -229,7 +277,10 @@ class myUI(Ui_MainWindow):
         
     def UpdateDataToDatabase(self):
         try:
-            rt = requests.put('http://localhost:9999/api-user/CreateUpdate_user/{}' .format(str(self.item.text())), data = {'barcode_user': self.ui_Edit_user.barcodeUser.text(), 'name_user': self.ui_Edit_user.fullname.text(), 'mobile': self.ui_Edit_user.mobilenumber.text(), 'description': self.ui_Edit_user.description.text()}, timeout = 1)
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['UpdataData'])
+            rt = requests.put('{}{}' .format(url ,str(self.item.text())), data = {'barcode_user': self.ui_Edit_user.barcodeUser.text(), 'name_user': self.ui_Edit_user.fullname.text(), 'mobile': self.ui_Edit_user.mobilenumber.text(), 'description': self.ui_Edit_user.description.text()}, timeout = 1)
             if rt.status_code == 202:
                 self.AleartBoxSuccess(description = 'Update user success !')
                 # update table
@@ -239,6 +290,64 @@ class myUI(Ui_MainWindow):
                 self.AleartBoxError(description = 'User not found !')
             elif rt.status_code == 400:
                 self.AleartBoxError(description = 'Can\'t update user !')
+        except:
+            self.AleartBoxError(description = 'Can\'t connect to Server !')
+
+# ----------> Delete User in POS <----------
+    def DeleteUserInPOSSystem(self):
+        try:
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['deleteUserPOS'])
+            student_id = self.item.text()
+            try:
+                # Delete user in database
+                rt = requests.delete('{}{}' .format(url, str(student_id)), timeout = 1)
+                if rt.status_code == 204:
+                    self.AleartBoxSuccess(description = 'Delete user success !')
+                    # update table
+                    self.LoadDataToTable()
+                elif rt.status_code == 404:
+                    self.AleartBoxError(description = 'User not found !')
+            except:
+                self.AleartBoxError(description = 'Can\'t connect to Server !')
+        except:
+            self.AleartBoxError(description = 'Can\'t open SetAPI.json !')
+
+# ----------> Search user in database <----------
+    def SearchUserInPOSSystem(self):
+        # set table width
+        self.SetTableWidth()
+        # Load text from line edit
+        text_filter = str(self.ui_mainUI.StudentIDSearch.text())
+        try:
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['filterUser'])
+            rt = requests.get('{}{}' .format(url, str(text_filter)), timeout = 1)
+            if rt.status_code == 200:
+                data = rt.json()
+                self.ui_mainUI.tableListuser.setRowCount(len(data))
+                row = 0
+                for person in data:
+                    self.ui_mainUI.tableListuser.setItem(row, 0, QtWidgets.QTableWidgetItem(str(row)))
+                    self.ui_mainUI.tableListuser.setItem(row, 1, QtWidgets.QTableWidgetItem(person['barcode_user']))
+                    self.ui_mainUI.tableListuser.setItem(row, 2, QtWidgets.QTableWidgetItem(person['name_user']))
+                    self.ui_mainUI.tableListuser.setItem(row, 3, QtWidgets.QTableWidgetItem(person['mobile']))
+                    self.ui_mainUI.tableListuser.setItem(row, 4, QtWidgets.QTableWidgetItem(person['description']))
+                    row += 1
+            elif rt.status_code == 404:
+                pass
+        except:
+            self.AleartBoxError(description = 'Can\'t connect to Server !')
+
+    # Clear Table
+    def ClearTable(self):
+        try:
+            # Clear line edit search
+            self.ui_mainUI.StudentIDSearch.clear()
+            # Load data to table again
+            self.LoadDataToTable()
         except:
             self.AleartBoxError(description = 'Can\'t connect to Server !')
         
