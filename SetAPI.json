@@ -5,5 +5,8 @@
     "LoadOldData": "http://localhost:8000/api-user/CreateUpdate_user/",
     "UpdataData": "http://localhost:8000/api-user/CreateUpdate_user/",
     "deleteUserPOS": "http://localhost:8000/api-user/deleteUser/",
-    "filterUser" : "http://localhost:8000/api-user/filterUser/"
+    "filterUser" : "http://localhost:8000/api-user/filterUser/",
+    "listObj" : "http://localhost:8000/api-stock/stock_list",
+    "addObj" : "http://localhost:8000/api-stock/create_object",
+    "loadDataOldBeforePUT_UpdateData" : "http://localhost:8000/api-stock/update_object/"
 }

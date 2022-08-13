@@ -1,0 +1,1 @@
+pyuic5 -x AddObjectPOS.ui -o AddObjectPOS.py

@@ -1,0 +1,1 @@
+pyuic5 -x EditObjectPOS.ui -o EditObjectPOS.py
