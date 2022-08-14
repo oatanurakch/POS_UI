@@ -163,6 +163,12 @@ class myUI(Ui_MainWindow):
         self.ui_mainUI.addObj.clicked.connect(self.AddObjectToPOS)
         # Edit object in POS System
         self.ui_mainUI.editObj.clicked.connect(self.EditObjectInPOS)
+        # Delete object in POS System
+        self.ui_mainUI.deleteObj.clicked.connect(self.DeleteObjectInPOS)
+        # Search object in POS System
+        self.ui_mainUI.SearchObjList.clicked.connect(self.FilterObjectSearch)
+        # Refresh button for load table
+        self.ui_mainUI.refreshObj.clicked.connect(self.RefreshTableListObject)
         
     def LoadTabIndex(self):
         self.TabIndex = self.ui_mainUI.tabWidget.currentIndex()
@@ -307,7 +313,10 @@ class myUI(Ui_MainWindow):
             if rt.status_code == 202:
                 self.AleartBoxSuccess(description = 'Update user success !')
                 # update table
-                self.LoadDataToTableUser()
+                if self.ui_mainUI.StudentIDSearch.text() == '':
+                    self.LoadDataToTableUser()
+                elif self.ui_mainUI.StudentIDSearch.text() != '':
+                    self.SearchUserInPOSSystem()
                 self.widget_Edit_user.close()
             elif rt.status_code == 404:
                 self.AleartBoxError(description = 'User not found !')
@@ -318,24 +327,32 @@ class myUI(Ui_MainWindow):
 
 # ----------> Delete User in POS <----------
     def DeleteUserInPOSSystem(self):
-        try:
-            with open('setAPI.json', 'r') as f:
-                data = json.load(f)
-            url = str(data['deleteUserPOS'])
-            student_id = self.item_user.text()
+        # Confirm 
+        ret =  self.AleartBoxConfirm(description = 'Do you want to delete {} ?' .format(self.item_user.text()))
+        if ret:
             try:
-                # Delete user in database
-                rt = requests.delete('{}{}' .format(url, str(student_id)), timeout = 1)
-                if rt.status_code == 204:
-                    self.AleartBoxSuccess(description = 'Delete user success !')
-                    # update table
-                    self.LoadDataToTableUser()
-                elif rt.status_code == 404:
-                    self.AleartBoxError(description = 'User not found !')
+                with open('setAPI.json', 'r') as f:
+                    data = json.load(f)
+                url = str(data['deleteUserPOS'])
+                student_id = self.item_user.text()
+                try:
+                    # Delete user in database
+                    rt = requests.delete('{}{}' .format(url, str(student_id)), timeout = 1)
+                    if rt.status_code == 204:
+                        self.AleartBoxSuccess(description = 'Delete user success !')
+                        # update table
+                        if self.ui_mainUI.StudentIDSearch.text() == '':
+                            self.LoadDataToTableUser()
+                        elif self.ui_mainUI.StudentIDSearch.text() != '':
+                            self.SearchUserInPOSSystem()
+                    elif rt.status_code == 404:
+                        self.AleartBoxError(description = 'User not found !')
+                except:
+                    self.AleartBoxError(description = 'Can\'t connect to Server !')
             except:
-                self.AleartBoxError(description = 'Can\'t connect to Server !')
-        except:
-            self.AleartBoxError(description = 'Can\'t open SetAPI.json !')
+                self.AleartBoxError(description = 'Can\'t open SetAPI.json !')
+        elif not(ret):
+            pass
 
 # ----------> Search user in database <----------
     def SearchUserInPOSSystem(self):
@@ -528,7 +545,10 @@ class myUI(Ui_MainWindow):
                     if rt.status_code == 200:
                         self.AleartBoxSuccess(description = 'Edit object success !')
                         # update table after edit user
-                        self.LoadObjectListAll()
+                        if self.ui_mainUI.ObjSearch.text() != '':
+                            self.FilterObjectSearch()
+                        elif self.ui_mainUI.ObjSearch.text() == '':
+                            self.LoadObjectListAll()
                         # Close form
                         self.widget_EditObect_POS.close()
                     elif rt.status_code == 400:
@@ -537,6 +557,79 @@ class myUI(Ui_MainWindow):
                     self.AleartBoxError(description = 'Can\'t connect to Server !')
         except:
             self.AleartBoxError(description = 'Something wrong !')
+
+# ----------> Delete object in Database <----------
+    def DeleteObjectInPOS(self):
+        try:
+            ret = self.AleartBoxConfirm(description = 'Are you sure to delete {} ?' .format(self.item_obj.text()))
+            if ret:
+                try:
+                    with open('setAPI.json', 'r') as f:
+                        data = json.load(f)
+                    url = str(data['loadDataOldBeforePUT_UpdateData'])
+                    rt = requests.delete(f'{url}{self.item_obj.text()}', timeout = 1)
+                    if rt.status_code == 204:
+                        self.AleartBoxSuccess(description = 'Delete object success !')
+                        # update table after delete user
+                        if self.ui_mainUI.ObjSearch.text() != '':
+                            self.FilterObjectSearch()
+                        elif self.ui_mainUI.ObjSearch.text() == '':
+                            self.LoadObjectListAll()
+                    elif rt.status_code == 404:
+                        self.AleartBoxError(description = 'Object not found !')
+                except:
+                    self.AleartBoxError(description = 'Something wrong !')
+        except:
+            self.AleartBoxError(description = 'Can\'t connect to Server !')
+
+# ----------> Filter Object <----------
+    def FilterObjectSearch(self):
+        try:
+            text_search = self.ui_mainUI.ObjSearch.text()
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['filterObject'])
+            rt = requests.get(f'{url}{text_search}', timeout = 1)
+            if rt.status_code == 200:
+                self.GetTableObject(alldata = rt.json())
+            elif rt.status_code == 404:
+                self.AleartBoxError(description = 'Object not found !')
+        except:
+            pass
+
+    def GetTableObject(self, alldata):
+        try:
+            self.SetTableWidth(table = 'tableListObject', width = [200, 408, 300, 160])
+        except:
+            pass
+        self.ui_mainUI.tableListObject.setRowCount(len(alldata))
+        try:
+            row = 0
+            for data in alldata:
+                obj_name = str(data['barcode_obj'])
+                durable_articles = str(data['durable_articles'])
+                stock = str(data['stock'])
+                allstock = str(data['all_stock'])
+                # stock it's equal None when stock it's haven't borrow by user
+                if stock == 'None':
+                    stock = allstock
+                self.ui_mainUI.tableListObject.setItem(row, 0, QtWidgets.QTableWidgetItem(obj_name))
+                self.ui_mainUI.tableListObject.setItem(row, 1, QtWidgets.QTableWidgetItem(durable_articles))
+                self.ui_mainUI.tableListObject.setItem(row, 2, QtWidgets.QTableWidgetItem(stock))
+                self.ui_mainUI.tableListObject.setItem(row, 3, QtWidgets.QTableWidgetItem(allstock))
+                row += 1
+            self.ui_mainUI.tableListObject.sortItems(0)
+        except:
+            self.AleartBoxError(description = 'Can\'t update table !')
+
+# ----------> refresh list of table <----------
+    def RefreshTableListObject(self):
+        try:
+            self.LoadObjectListAll()
+            # clear text line edit of object search
+            self.ui_mainUI.ObjSearch.clear()
+        except:
+            self.AleartBoxError(description = 'Can\'t refresh table !')
         
 # ----------> Close Program <----------
     def closeProgram(self):
