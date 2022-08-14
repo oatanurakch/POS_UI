@@ -20,6 +20,8 @@ import UI.EditUserPOS
 import UI.AddObjectPOS
 # Edit object POS
 import UI.EditObjectPOS
+# Borrow or Return Object in POS System
+import UI.Borrow_Return
 
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
@@ -138,6 +140,9 @@ class myUI(Ui_MainWindow):
         elif table == 'tableListObject':
             for col in range(self.ui_mainUI.tableListObject.columnCount()):
                 getattr(self.ui_mainUI, table).setColumnWidth(col, width[col])
+        elif table == 'tableListBorrow':
+            for col in range(self.ui_mainUI.tableListBorrow.columnCount()):
+                getattr(self.ui_mainUI, table).setColumnWidth(col, width[col])
         
     # Setup button main program
     def SetUpButtonMain(self):
@@ -169,9 +174,12 @@ class myUI(Ui_MainWindow):
         self.ui_mainUI.SearchObjList.clicked.connect(self.FilterObjectSearch)
         # Refresh button for load table
         self.ui_mainUI.refreshObj.clicked.connect(self.RefreshTableListObject)
+        # When Borrow and Return button clicked
+        self.ui_mainUI.borrow_or_return.clicked.connect(self.Borrow_Return_ObjectInPOS)
         
     def LoadTabIndex(self):
         self.TabIndex = self.ui_mainUI.tabWidget.currentIndex()
+        # Tab index 2 it's mean User in POS system
         if self.TabIndex == 2:
             # disable edit user
             self.ui_mainUI.editUser.setEnabled(False)
@@ -179,6 +187,11 @@ class myUI(Ui_MainWindow):
             # GET User list in database
             # Load data to table
             self.LoadDataToTableUser()
+        # Tab index 1 it's mean Borrow list in POS system
+        elif self.TabIndex == 1:
+            # Load data borrow list
+            self.LoadDataToBorrowListTable()
+        # Tab index 0 it's mean All object in POS system
         elif self.TabIndex == 0:
             # Disable edit Obj, Delete Obj
             obj_name = ['editObj', 'deleteObj']
@@ -187,6 +200,34 @@ class myUI(Ui_MainWindow):
             # Call load object list in Database
             self.LoadObjectListAll()
             
+    # Load data to table of borrow list
+    def LoadDataToBorrowListTable(self):
+        self.SetTableWidth(table = 'tableListBorrow', width = [170, 250, 358, 50, 240])
+        try:
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['borrowList'])
+            # requet data from url
+            rt = requests.get(url, timeout = 1)
+            if rt.status_code == 200:
+                data_rt = rt.json()
+                self.ui_mainUI.tableListBorrow.setRowCount(len(data_rt))
+                row = 0
+                for dataBR in data_rt:
+                    self.ui_mainUI.tableListBorrow.setItem(row, 0, QtWidgets.QTableWidgetItem(str(dataBR['UserID'])))
+                    self.ui_mainUI.tableListBorrow.setItem(row, 1, QtWidgets.QTableWidgetItem(str(dataBR['ObjectID'])))
+                    self.ui_mainUI.tableListBorrow.setItem(row, 2, QtWidgets.QTableWidgetItem(str(dataBR['ArticlesID'])))
+                    self.ui_mainUI.tableListBorrow.setItem(row, 3, QtWidgets.QTableWidgetItem(str(dataBR['quality_borrow'])))
+                    self.ui_mainUI.tableListBorrow.setItem(row, 4, QtWidgets.QTableWidgetItem(str(dataBR['update'])))
+                    row += 1
+                # Sorting item in table
+                self.ui_mainUI.tableListBorrow.sortItems(0)
+            elif rt.status_code == 404:
+                self.AleartBoxError(description = 'Not found data in database')
+        except:
+            self.AleartBoxError(description = 'Error in load data to table')
+    
+    # Load data to table user
     def LoadDataToTableUser(self):
         # set table width
         self.SetTableWidth(table = 'tableListuser', width = [200, 408, 300, 160])
@@ -630,6 +671,16 @@ class myUI(Ui_MainWindow):
             self.ui_mainUI.ObjSearch.clear()
         except:
             self.AleartBoxError(description = 'Can\'t refresh table !')
+            
+# ----------> Borrow object in POS System <----------
+    def Borrow_Return_ObjectInPOS(self):
+        self.widget_BorrowOrReturn_POS = QtWidgets.QMainWindow()
+        self.ui_BorrowOrReturn_POS = UI.Borrow_Return.Ui_MainWindow()
+        self.ui_BorrowOrReturn_POS.setupUi(self.widget_BorrowOrReturn_POS)
+        self.widget_BorrowOrReturn_POS.setWindowTitle('Borrow or Return')
+        self.widget_BorrowOrReturn_POS.setWindowIcon(QtGui.QIcon(r'elec.png'))
+        self.ui_BorrowOrReturn_POS.label_8.setPixmap(QtGui.QPixmap(r'elec.png'))
+        self.widget_BorrowOrReturn_POS.show()
         
 # ----------> Close Program <----------
     def closeProgram(self):

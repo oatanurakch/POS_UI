@@ -183,7 +183,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addLayout(self.gridLayout_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 320, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 320, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -199,7 +199,7 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "แก้ไขผู้ใช้งาน"))
         self.label_3.setText(_translate("MainWindow", "หมายเหตุ      "))
         self.label_4.setText(_translate("MainWindow", "เบอร์มือถือ    "))
-        self.label.setText(_translate("MainWindow", "รหัสนักศึกษา  "))
+        self.label.setText(_translate("MainWindow", "รหัสผู้ใช้งาน  "))
         self.label_2.setText(_translate("MainWindow", "ชื่อ - นามสกุล"))
         self.editconfirm.setText(_translate("MainWindow", "แก้ไข"))
 

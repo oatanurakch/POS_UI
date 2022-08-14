@@ -9,5 +9,6 @@
     "listObj" : "http://localhost:8000/api-stock/stock_list",
     "addObj" : "http://localhost:8000/api-stock/create_object",
     "loadDataOldBeforePUT_UpdateData" : "http://localhost:8000/api-stock/update_object/",
-    "filterObject" : "http://localhost:8000/api-stock/filter_object/"
+    "filterObject" : "http://localhost:8000/api-stock/filter_object/",
+    "borrowList" : "http://localhost:8000/api-borrow/borrow-list"
 }
