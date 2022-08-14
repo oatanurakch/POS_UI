@@ -186,6 +186,51 @@
        <attribute name="title">
         <string>รายการวัสดุที่ถูกยืม</string>
        </attribute>
+       <widget class="QTableWidget" name="tableListBorrow">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>1138</width>
+          <height>564</height>
+         </rect>
+        </property>
+        <property name="autoScroll">
+         <bool>true</bool>
+        </property>
+        <property name="autoScrollMargin">
+         <number>16</number>
+        </property>
+        <property name="sortingEnabled">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderCascadingSectionResizes">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>36</number>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>รหัสผู้ใช้งาน</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>รายการ</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>เลขครุภัณฑ์</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>จำนวน</string>
+         </property>
+        </column>
+       </widget>
       </widget>
       <widget class="QWidget" name="UserTab">
        <attribute name="title">
@@ -286,17 +331,17 @@
           </attribute>
           <column>
            <property name="text">
-            <string>Student ID</string>
+            <string>รหัสผู้ใช้งาน</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string>Full name</string>
+            <string>ชื่อ - นามสกุล</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string>Mobile</string>
+            <string>เบอร์โทรศัพท์</string>
            </property>
           </column>
           <column>
@@ -318,7 +363,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMenu">
