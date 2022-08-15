@@ -1,3 +1,4 @@
+from ctypes import alignment
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -217,8 +218,11 @@ class myUI(Ui_MainWindow):
                     self.ui_mainUI.tableListBorrow.setItem(row, 0, QtWidgets.QTableWidgetItem(str(dataBR['UserID'])))
                     self.ui_mainUI.tableListBorrow.setItem(row, 1, QtWidgets.QTableWidgetItem(str(dataBR['ObjectID'])))
                     self.ui_mainUI.tableListBorrow.setItem(row, 2, QtWidgets.QTableWidgetItem(str(dataBR['ArticlesID'])))
-                    self.ui_mainUI.tableListBorrow.setItem(row, 3, QtWidgets.QTableWidgetItem(str(dataBR['quality_borrow'])))
-                    self.ui_mainUI.tableListBorrow.setItem(row, 4, QtWidgets.QTableWidgetItem(str(dataBR['update'])))
+                    # Set Alignment center for quality of borrow list
+                    item_Alignment = QtWidgets.QTableWidgetItem(str(dataBR['quality_borrow']))
+                    item_Alignment.setTextAlignment(4)
+                    self.ui_mainUI.tableListBorrow.setItem(row, 3, item_Alignment)
+                    self.ui_mainUI.tableListBorrow.setItem(row, 4, QtWidgets.QTableWidgetItem((str(dataBR['update'])).split('.')[0]))
                     row += 1
                 # Sorting item in table
                 self.ui_mainUI.tableListBorrow.sortItems(0)
@@ -457,10 +461,15 @@ class myUI(Ui_MainWindow):
                     # stock it's equal None when stock it's haven't borrow by user
                     if stock == 'None':
                         stock = allstock
+                    # Set alignment data in table
+                    list_alignCenter = [QtWidgets.QTableWidgetItem(str(i)) for i in [stock, allstock]]
+                    for item in list_alignCenter:
+                        # setTextAlignment(4) # 4 it's center of cell
+                        item.setTextAlignment(4)
                     self.ui_mainUI.tableListObject.setItem(row, 0, QtWidgets.QTableWidgetItem(obj_name))
                     self.ui_mainUI.tableListObject.setItem(row, 1, QtWidgets.QTableWidgetItem(durable_articles))
-                    self.ui_mainUI.tableListObject.setItem(row, 2, QtWidgets.QTableWidgetItem(stock))
-                    self.ui_mainUI.tableListObject.setItem(row, 3, QtWidgets.QTableWidgetItem(allstock))
+                    self.ui_mainUI.tableListObject.setItem(row, 2, list_alignCenter[0])
+                    self.ui_mainUI.tableListObject.setItem(row, 3, list_alignCenter[1])
                     row += 1
                 self.ui_mainUI.tableListObject.sortItems(0)
             elif rt.status_code == 404:
@@ -654,10 +663,15 @@ class myUI(Ui_MainWindow):
                 # stock it's equal None when stock it's haven't borrow by user
                 if stock == 'None':
                     stock = allstock
+                # Set alignment data in table
+                list_alignCenter = [QtWidgets.QTableWidgetItem(str(i)) for i in [stock, allstock]]
+                for item in list_alignCenter:
+                    # setTextAlignment(4) # 4 it's center of cell
+                    item.setTextAlignment(4)
                 self.ui_mainUI.tableListObject.setItem(row, 0, QtWidgets.QTableWidgetItem(obj_name))
                 self.ui_mainUI.tableListObject.setItem(row, 1, QtWidgets.QTableWidgetItem(durable_articles))
-                self.ui_mainUI.tableListObject.setItem(row, 2, QtWidgets.QTableWidgetItem(stock))
-                self.ui_mainUI.tableListObject.setItem(row, 3, QtWidgets.QTableWidgetItem(allstock))
+                self.ui_mainUI.tableListObject.setItem(row, 2, list_alignCenter[0])
+                self.ui_mainUI.tableListObject.setItem(row, 3, list_alignCenter[1])
                 row += 1
             self.ui_mainUI.tableListObject.sortItems(0)
         except:
