@@ -695,6 +695,44 @@ class myUI(Ui_MainWindow):
         self.widget_BorrowOrReturn_POS.setWindowIcon(QtGui.QIcon(r'elec.png'))
         self.ui_BorrowOrReturn_POS.label_8.setPixmap(QtGui.QPixmap(r'elec.png'))
         self.widget_BorrowOrReturn_POS.show()
+        # set up button signal
+        self.SetUp_Ui_BorrowOrReturn_POS()
+
+    def SetUp_Ui_BorrowOrReturn_POS(self):
+        # Barcode of user
+        self.ui_BorrowOrReturn_POS.barcodeUser.returnPressed.connect(self.GetNameByBarcode)
+
+    # Load name of user by barcode
+    def GetNameByBarcode(self):
+        try:
+            # Load api in .json
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['LoadOldData'])
+            try:
+                # Get name of user
+                rt = requests.get(f'{url}{self.ui_BorrowOrReturn_POS.barcodeUser.text()}', timeout = 1)
+                if rt.status_code == 200:
+                    # Set text name of user
+                    self.ui_BorrowOrReturn_POS.fullname_2.setText(rt.json()['name_user'])
+                elif rt.status_code == 404:
+                    # Aleart box for notify user that user not found
+                    self.AleartBoxError(description = 'User not found !')
+                    try:
+                        # Clear user text in line edit
+                        self.ui_BorrowOrReturn_POS.barcodeUser.clear()
+                    except:
+                        pass
+                    try:
+                        # Clear Full name
+                        self.ui_BorrowOrReturn_POS.fullname_2.clear()
+                    except:
+                        pass
+            except:
+                self.AleartBoxError(description = 'Can\'t connect to Server !')
+        except:
+            self.AleartBoxError(description = 'Can\'t load json !')
+
         
 # ----------> Close Program <----------
     def closeProgram(self):
