@@ -9,7 +9,7 @@ app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 
 # Login page
-from Main import myUI
+from App import myUI
 obj = myUI()
 obj.show()
 
