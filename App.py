@@ -24,6 +24,9 @@ import UI.EditObjectPOS
 # Borrow or Return Object in POS System
 import UI.Borrow_Return
 
+# google sheet api
+from connection import LoadNameUserInSheet, updatedata
+
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 
@@ -236,6 +239,7 @@ class myUI(Ui_MainWindow):
         # set table width
         self.SetTableWidth(table = 'tableListuser', width = [200, 408, 300, 160])
         try:
+            # Load data from database
             with open('setAPI.json', 'r') as f:
                 data = json.load(f)
             url = str(data['userList'])
