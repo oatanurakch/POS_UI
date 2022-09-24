@@ -233,7 +233,7 @@ class myUI(Ui_MainWindow):
                 self.AleartBoxError(description = 'Not found data in database')
         except:
             self.AleartBoxError(description = 'Error in load data to table')
-    
+            
     # Load data to table user
     def LoadDataToTableUser(self):
         # set table width
@@ -254,6 +254,17 @@ class myUI(Ui_MainWindow):
                 self.ui_mainUI.tableListuser.setItem(row, 3, QtWidgets.QTableWidgetItem(person['description']))
                 row += 1
             self.ui_mainUI.tableListuser.sortItems(0)
+            # # Load data from google sheet
+            # data = LoadNameUserInSheet()
+            # self.ui_mainUI.tableListuser.setRowCount(len(data))
+            # row = 0
+            # for person in data:
+            #     self.ui_mainUI.tableListuser.setItem(row, 0, QtWidgets.QTableWidgetItem(person[0]))
+            #     self.ui_mainUI.tableListuser.setItem(row, 1, QtWidgets.QTableWidgetItem(person[1]))
+            #     self.ui_mainUI.tableListuser.setItem(row, 2, QtWidgets.QTableWidgetItem(person[2]))
+            #     self.ui_mainUI.tableListuser.setItem(row, 3, QtWidgets.QTableWidgetItem(person[3]))
+            #     row += 1 
+            # self.ui_mainUI.tableListuser.sortItems(0)
         except:
             self.AleartBoxError(description = 'Can\'t connect to Server !')
                 
