@@ -12,5 +12,6 @@
     "filterObject" : "http://localhost:8000/api-stock/filter_object/",
     "borrowList" : "http://localhost:8000/api-borrow/borrow-list",
     "addBorrow" : "http://localhost:8000/api-borrow/borrow-list/add",
-    "returnObject" : "http://localhost:8000/api-return/return-object"
+    "returnObject" : "http://localhost:8000/api-return/return-object",
+    "brokenObject" : "http://localhost:8000/api-stock/broken_object"
 }

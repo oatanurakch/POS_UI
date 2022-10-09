@@ -1,5 +1,6 @@
 from cgitb import text
 from ctypes import alignment
+from pydoc import describe
 from this import d
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
@@ -25,6 +26,8 @@ import UI.AddObjectPOS
 import UI.EditObjectPOS
 # Borrow or Return Object in POS System
 import UI.Borrow_Return
+# Broken or Loss object in POS System
+import UI.BrokenLossInPOS
 
 # google sheet api
 from connection import LoadNameUserInSheet, updatedata
@@ -178,6 +181,8 @@ class myUI(Ui_MainWindow):
         self.ui_mainUI.refreshObj.clicked.connect(self.RefreshTableListObject)
         # When Borrow and Return button clicked
         self.ui_mainUI.borrow_or_return.clicked.connect(self.Borrow_Return_ObjectInPOS)
+        # When click broken or loss button
+        self.ui_mainUI.loss_or_broke.clicked.connect(self.Broken_Loss_ObjectInPOS)
         
     def LoadTabIndex(self):
         self.TabIndex = self.ui_mainUI.tabWidget.currentIndex()
@@ -414,6 +419,7 @@ class myUI(Ui_MainWindow):
             OldData = rt.json()
             # Old data load
             self.old_barcode = OldData['barcode_obj']
+            self.oldstock = OldData['stock']
             old_articles = OldData['durable_articles']
             old_all_stock = OldData['all_stock']
             # Set Text in line edit, it's old data
@@ -600,6 +606,11 @@ class myUI(Ui_MainWindow):
                 if rt.status_code == 201:
                     self.AleartBoxSuccess(description = 'Borrow object success !')
                     self.ui_BorrowOrReturn_POS.barcodeObj_2.clear()
+                    self.ui_BorrowOrReturn_POS.fullstock_2.clear()
+                    # Refresh table object list
+                    self.LoadObjectListAll()
+                    # Update table of borrow list
+                    self.LoadDataToBorrowListTable()
                 elif rt.status_code == 404:
                     self.AleartBoxError(description = 'Object not found !')
                 elif rt.status_code == 400:
@@ -623,6 +634,11 @@ class myUI(Ui_MainWindow):
                 if rt.status_code == 202:
                     self.AleartBoxSuccess(description = 'Return object success !')
                     self.ui_BorrowOrReturn_POS.barcodeObj_2.clear()
+                    self.ui_BorrowOrReturn_POS.fullstock_2.clear()
+                    # Refresh table object list
+                    self.LoadObjectListAll()
+                    # Update table of borrow list
+                    self.LoadDataToBorrowListTable()
                 elif rt.status_code == 404:
                     self.AleartBoxError(description = 'Object not found !')
                 elif rt.status_code == 400:
@@ -633,7 +649,58 @@ class myUI(Ui_MainWindow):
                     self.AleartBoxError(description = 'Return over quality !')
         except: pass 
 
-        
+# ----------> Broken or Loss <----------
+    def Broken_Loss_ObjectInPOS(self):
+        try:
+            self.widget_broken_lossUI = QtWidgets.QMainWindow()
+            self.ui_Broken_Loss = UI.BrokenLossInPOS.Ui_MainWindow()
+            self.ui_Broken_Loss.setupUi(self.widget_broken_lossUI)
+            self.widget_broken_lossUI.setWindowTitle('Loss or Broken')
+            self.widget_broken_lossUI.setWindowIcon(QtGui.QIcon(r'elec.png'))
+            self.ui_Broken_Loss.label_8.setPixmap(QtGui.QPixmap(r'elec.png'))
+            self.widget_broken_lossUI.show()
+        except Exception as e:
+            print(e)
+        # Setup signal in UI
+        self.SetUp_ui_Broken_LossSignal()
+
+    def SetUp_ui_Broken_LossSignal(self):
+        self.ui_Broken_Loss.report.clicked.connect(self.BrokenReport)
+
+    def BrokenReport(self):
+        # Load url
+        try:
+            with open('setAPI.json', 'r') as f:
+                data = json.load(f)
+            url = str(data['brokenObject'])
+        except Exception as e:
+            self.AleartBoxError(description = 'Can\'t load json !')
+        # Check if user or some line edit not found
+        obj = self.ui_Broken_Loss.barcodeObj.text()
+        quality = self.ui_Broken_Loss.quality.text()
+        describe = self.ui_Broken_Loss.des.text()
+        if obj == '' or quality == '':
+            self.AleartBoxError(description = 'Please fill all red line !')
+        else:
+            rt = requests.post(url, data = {'OBJ': obj, 'QUALITY': quality, 'DES': describe}, timeout = 1)
+            if rt.status_code == 201:
+                self.AleartBoxSuccess(description = 'Report success !')
+                # Refresh object in table in UI
+                self.LoadObjectListAll()
+                # Clear line edit
+                self.ui_Broken_Loss.barcodeObj.clear()
+                self.ui_Broken_Loss.quality.clear()
+                self.ui_Broken_Loss.des.clear()
+            elif rt.status_code == 404:
+                self.AleartBoxError(description = 'Object not found !')
+                # Reset line edit
+                self.ui_Broken_Loss.barcodeObj.clear()
+                self.ui_Broken_Loss.quality.clear()
+            elif rt.status_code == 400:
+                self.AleartBoxError(description = 'Object not save to database !')
+            elif rt.status_code == 410:
+                self.AleartBoxError(description = 'Stock not update !')
+
 # ----------> Close Program <----------
     def closeProgram(self):
         try:
@@ -646,6 +713,10 @@ class myUI(Ui_MainWindow):
             pass
         try:
             self.widget_register_user.close()
+        except:
+            pass
+        try:
+            self.widget_broken_lossUI.close()
         except:
             pass
         sys.exit(app.exec_())

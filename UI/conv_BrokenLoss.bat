@@ -1,0 +1,1 @@
+pyuic5 -x broken_loss.ui -o BrokenLossInPOS.py
